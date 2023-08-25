@@ -116,7 +116,13 @@ all$project_assay <- gsub('.*\\_','',all$project_name)
 all_simple_002 <- all[which(all$project_type == "002"),]
 all_simple_002$created_date_MY <- as.Date(paste(all_simple_002$created_date_MY, "01"), "%Y %b %d")
 
-p = ggplot(all_simple_002, aes(x=created_date_MY, fill = project_assay, colour = "black")) +
+## need to categorise other projects as other
+all_simple_002$project_assay_sorted <- all_simple_002$project_assay
+all_simple_002$project_assay_sorted[! all_simple_002$project_assay_sorted %in% c("CP", "TSOE", "clinicalgenetics", 
+                                                                              "MYE", "FH", "TWE", "TSO", "CEN", 
+                                                                              "SNP", "TSO500", "canrisk")] <- "Others"
+
+p = ggplot(all_simple_002, aes(x=created_date_MY, fill = project_assay_sorted, colour = "black")) +
   geom_histogram(binwidth = 30) +
   scale_x_date(date_breaks = "months" , date_labels = "%b-%y") +
   theme_classic() +
