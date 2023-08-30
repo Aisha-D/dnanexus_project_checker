@@ -1,6 +1,6 @@
-# dnanexus_project_checker
+# DNAnexus project checker
 
-This repo contains script to check the status of DNAnexus projects. Each file does as follows:
+This repo contains script to check the standards of DNAnexus projects are met. Each file does as follows:
 
 - **project_query.sh** - generates files with info on created date, modified data and storage costs per project (002, 003 and 004)
 
@@ -8,5 +8,7 @@ This repo contains script to check the status of DNAnexus projects. Each file do
 
 - **functions.R** - a bunch of functions called in the Rmardown
 
-- **DNAnexus_project_checker.Rmd** - Rmarkdown that generates plots from the data produced from the first two scripts listed. Outputs is html interactive dashboard.
+- **DNAnexus_project_checker.Rmd** - Rmarkdown that generates plots from the data produced from the first two scripts listed. Output is html interactive dashboard.
+
+
 
