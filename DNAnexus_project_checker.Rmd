@@ -231,3 +231,65 @@ p = ggplot(all_sum_storage, aes(x=created_date_MY, y=storage_month_cumulative, c
 ggplotly(p)
 ```
 
+Archival Status Overview 
+=========================================================
+
+Column {.tabset}
+-----------------------------------------------------------------------
+
+
+### Archival status for CEN projects across time
+
+```{r}
+# read data in by looping though each file in the directory
+mydir = "~/Documents/Training/portfolio/audit"
+total_files =  list.files(path = mydir, pattern= ("*status.txt"))
+dat <- matrix(NA, nrow = 0, ncol=2)
+for(file in total_files) {
+  filename <- strsplit(file, "_CEN_file_status.txt") #removes the .table from filename
+  file_df <- read.csv(paste(mydir, file, sep="/"), header = F) #read in the file as a dataframe
+  filename <- filename[[1]] #get the dataframe from the list
+  file_df$runfolder <- rep(filename, nrow(file_df))
+  dat <- rbind(dat, file_df)
+  assign(filename, file_df) #assigns the filename to the object file_df which is the dataframe
+  filename <- NULL
+  file_df <- NULL}
+
+colnames(dat) <- c("archival_status", "runfolder")
+
+
+##plots!
+p = ggplot(dat, aes(fill=archival_status, x=runfolder)) + 
+  geom_bar(position="stack", stat="count") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        plot.title = element_text(hjust = 0.5)) +
+  labs(x = "", y = "", title = "Archival status for CEN DNAnexus projects")
+
+ggplotly(p)
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Archival status for files in CEN projects (percentage)
+
+```{r}
+df <- dat %>% 
+  group_by(archival_status) %>% # Variable to be transformed
+  count() %>% 
+  ungroup() %>% 
+  mutate(perc = `n` / sum(`n`)) %>% 
+  arrange(perc) %>%
+  mutate(labels = scales::percent(perc))
+
+ggplot(df, aes(x = "", y = perc, fill = archival_status)) +
+  geom_col() +
+  geom_text(aes(label = labels),
+            position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(x = "", y = "", title = "Archival status of all CEN DNAnexus project")
+
+
+```
